@@ -2,39 +2,144 @@
 <html>
 
 <head>
-    <title>Employee Form</title><meta charset="utf-8">
+    <title>Project Management</title><meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
-
 <body>
     <div class="container mt-5">
-        <h2 class="text-center mb-4">Project Form</h2>
-        <form id="empForm" method="post">
-            <label for="project_id">Project ID:</label>
-            <input type="text" id="project_id" name="project_id" required><br>
+		<h2 class="text-center mb-4">Project Form</h2>
+		<form id="ProjectForm" method="POST">
 
-            <label for="project_name">Project Name:</label>
-            <input type="text" id="project_name" name="project_name"  required><br>
-
-            <label for="assigned_to">Assigned To:</label>
-            <input type="text" id="assigned_to" name="assigned_to"  required><br>
-
-            <label for="assignment_date">Assignment Date:</label>
-            <input type="date" id="assignment_date" name="assignment_date" required><br>
-
-            <label for="deadline">Deadline:</label>
-            <input type="date" id="deadline" name="deadline"  required><br>
-
-            <button type="submit" id="save" name="save" >Save</button>
-            <button type="submit" id="update" name="update" >Update</button>
-            <button type="reset" id="reset" name="reset">Reset</button>
+			<div class="form-group row">
+				<label for="project_id" class="col-sm-2 col-form-label">Project ID:</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" id="assigned_to" name="assigned_to"  autofocus>
+				</div>
+			</div>
 
 
-        </form>
-    </div>
+			<div class="form-group row">
+				<label for="project_name" class="col-sm-2 col-form-label">Project Name</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" id="project_name" name="project_name" >
+				</div>
+			</div>
+
+
+			<div class="form-group row">
+				<label for="assigned_to" class="col-sm-2 col-form-label">Assignment Date:</label>
+				<div class="col-sm-10">
+                    <input type="date" class="form-control" id="assignment_date" name="assignment_date" required>
+				</div>
+			</div>
+
+
+			<div class="form-group row">
+				<label for="deadline" class="col-sm-2 col-form-label">Deadline</label>
+				<div class="col-sm-10">
+                    <input type="date" class="form-control" id="deadline" name="deadline"  required>
+				</div>
+			</div>
+			
+			<div class="form-group row">
+				<div class="col-sm-10 offset-sm-2">
+                    <button type="submit" class="btn btn-primary" id="saveBtn" name="save" >Save</button>
+                    <button type="submit" class="btn btn-primary" id="changeBtn" name="update" >Update</button>
+                    <button type="reset"  class="btn btn-primary" id="resetBtn" name="reset">Reset</button>
+				</div>
+			</div>
+		</form>
+	</div>
 </body>
+<script src="https://login2explore.com/jpdb/resources/js/0.0.3/jpdb-commons.js"></script>
+    <script>
+        $("#empId").focus();
+        function validateAndGetFormData() {
+            var empIdVar = $("#assigned_to").val();
+            if (empIdVar === "") {
+                alert("Employee ID Required Value");
+                $("#assigned_to").focus();
+                return "";
+            }
+            var empNameVar = $("#project_name").val();
+            if (empNameVar === "") {
+                alert("Project Name is Required Value");
+                $("#project_name").focus();
+                return "";
+            }
+            var empEmailVar = $("#assignment_date").val();
+            if (empEmailVar === "") {
+                alert("Assignment date is Required Value");
+                $("#assignment_date").focus();
+                return "";
+            }
+            var deadlineVar = $("#deadline").val();
+            if (deadlineVar === "") {
+                alert("Deadline is Required Value");
+                $("#deadline").focus();
+                return "";
+            }
+            var jsonStrObj = {
+                empId: empIdVar,
+                empName: empNameVar,
+                empEmail: empEmailVar,
+                deadline: deadlineVar,
+                
+            };
+            return JSON.stringify(jsonStrObj);
+        }
+        // This method is used to create PUT Json request.
+        function createPUTRequest(connToken, jsonObj, dbName, relName) {
+            var putRequest = "{\n"
+                + "\"token\" : \""
+                + connToken
+                + "\","
+                + "\"dbName\": \""
+                + dbName
+                + "\",\n" + "\"cmd\" : \"PUT\",\n"
+                + "\"rel\" : \""
+                + relName + "\","
+                + "\"jsonStr\": \n"
+                + jsonObj
+                + "\n"
+                + "}";
+            return putRequest;
+        }
+        function executeCommand(reqString, dbBaseUrl, apiEndPointUrl) {
+            var url = dbBaseUrl + apiEndPointUrl;
+            var jsonObj;
+            $.post(url, reqString, function (result) {
+                jsonObj = JSON.parse(result);
+            }).fail(function (result) {
+                var dataJsonObj = result.responseText;
+                jsonObj = JSON.parse(dataJsonObj);
+            });
+            return jsonObj;
+        }
+        function resetForm() {
+            $("#empId").val("")
+            $("#empName").val("");
+            $("#empEmail").val("");
+            $("#empId").focus();
+        }
+        function saveEmployee() {
+            var jsonStr = validateAndGetFormData();
+            if (jsonStr === "") {
+                return;
+            }
+            var putReqStr = createPUTRequest("	90932519|-31949274422103902|90949598",
+                jsonStr, "SAMPLE", "EMP-REL");
+            alert(putReqStr);
+            jQuery.ajaxSetup({ async: false });
+            var resultObj = executeCommand(putReqStr,
+                "http://api.login2explore.com:5577", "/api/iml");
+            alert(JSON.stringify(resultObj));
+            jQuery.ajaxSetup({ async: true });
+            resetForm();
+        }
+    </script>
 
 </html>
