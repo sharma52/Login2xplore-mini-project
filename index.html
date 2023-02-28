@@ -54,6 +54,8 @@
 		</form>
 	</div>
 </body>
+
+
 <script src="https://login2explore.com/jpdb/resources/js/0.0.3/jpdb-commons.js"></script>
     <script>
         $("#empId").focus();
@@ -130,8 +132,8 @@
             if (jsonStr === "") {
                 return;
             }
-            var putReqStr = createPUTRequest("	90932519|-31949274422103902|90949598",
-                jsonStr, "SAMPLE", "EMP-REL");
+            var putReqStr = createPUTRequest("90932519|-31949274666628985|90949599",
+                jsonStr, "Project", "Project-details");
             alert(putReqStr);
             jQuery.ajaxSetup({ async: false });
             var resultObj = executeCommand(putReqStr,
