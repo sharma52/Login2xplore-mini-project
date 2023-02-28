@@ -85,9 +85,9 @@
                 return "";
             }
             var jsonStrObj = {
-                empId: empIdVar,
-                empName: empNameVar,
-                empEmail: empEmailVar,
+                assigned_to: empIdVar,
+                project_name: empNameVar,
+                assignment_date: empEmailVar,
                 deadline: deadlineVar,
                 
             };
@@ -122,9 +122,10 @@
             return jsonObj;
         }
         function resetForm() {
-            $("#empId").val("")
-            $("#empName").val("");
-            $("#empEmail").val("");
+            $("#assigned_to").val("")
+            $("#project_name").val("");
+            $("#assignment_date").val("");
+            $("deadline").val("");
             $("#empId").focus();
         }
         function saveEmployee() {
